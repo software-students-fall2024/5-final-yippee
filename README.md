@@ -15,8 +15,8 @@ A web app that recommends a movie to a user everyday. Users can keep track of th
 
 ## Container Images for Each Subsystem
 
-Web App: [Dockerhub](https://hub.docker.com/r/teamyippee/web-app)
-MongoDB: Hosted on Mongo Atlas.
+- Web App: [Dockerhub](https://hub.docker.com/r/teamyippee/web-app)
+- MongoDB: Hosted on Mongo Atlas.
 
 ## How to Configure the Project
 
