@@ -76,7 +76,8 @@ def create_app():
 
     @app.route('/')
     def index():
-
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
         # user = create_user('WilliamTest2','unhashedpass')
         # users_collection.insert_one(user);
         # mongo.db.users.insert_one(user)
@@ -160,7 +161,7 @@ def create_app():
     @app.route('/profile/<user>')
     @login_required
     def profile(user):
-        user = users_collection.find_one({"username": "WilliamTest2"})
+        user = users_collection.find_one({"_id": ObjectId(current_user.id)})
         
         # Get the watched movies for the user
         watched_movies_ids = [
