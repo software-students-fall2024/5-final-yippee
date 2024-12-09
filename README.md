@@ -15,11 +15,13 @@ A web app that recommends a movie to a user everyday. Users can keep track of th
 
 ## Container Images for Each Subsystem
 
+[Web App](https://hub.docker.com/r/teamyippee/web-app)
+MongoDB subsystem hosted on Mongo Atlas.
 
 ## How to Configure the Project
 
+There is nothing to configure! Experience the app by visiting (https://swe-final-web-app-m232t.ondigitalocean.app/)
 
 ## How to Set up Environment Variables
 
-
-## .ENV files
+All environment variables have already been configured in Digital Ocean, nothing for the user's end.
