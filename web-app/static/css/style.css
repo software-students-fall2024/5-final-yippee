@@ -67,6 +67,15 @@ main {
     margin: 0; /* Prevent additional spacing */
 }
 
+a:link, a:visited {
+    color: rgb(245, 251, 199); 
+    text-decoration: none; 
+}
+
+nav a {
+    text-decoration: none; /* Remove underline */
+}
+
 /* Form styling */
 form {
     display: flex;

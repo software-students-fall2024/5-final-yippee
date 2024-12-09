@@ -2,11 +2,6 @@
 {% block title %}{{ user }}'s Profile{% endblock %}
 
 {% block content %}
-<header>
-    <img src="{{ url_for('static', filename='images/movie-logo.png') }}" alt="Movie 4 You-vie Logo">
-    <h1>Movie 4 You-vie!</h1>
-    <a href="/" style="color: white; text-decoration: none;">Today's Movie</a>
-</header>
 
 <div class="main-backdrop"></div>
 
@@ -29,8 +24,4 @@
         {% endif %}
     </div>
 </main>
-
-<footer>
-    <p>&copy; 2024 Movie 4 You-vie!. All rights reserved.</p>
-</footer>
 {% endblock %}
