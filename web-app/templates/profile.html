@@ -2,6 +2,35 @@
 {% block title %}{{ user }}'s Profile{% endblock %}
 
 {% block content %}
-<h1>Welcome! {{ user }}</h1>
+<header>
+    <img src="{{ url_for('static', filename='images/movie-logo.png') }}" alt="Movie 4 You-vie Logo">
+    <h1>Movie 4 You-vie!</h1>
+    <a href="/" style="color: white; text-decoration: none;">Today's Movie</a>
+</header>
 
+<div class="main-backdrop"></div>
+
+<main>
+    <div class="content">
+        <h1>Welcome, {{ user }}!</h1>
+        <h2>Your Watched Movies</h2>
+        
+        {% if watchedMovies %}
+            <ul>
+                {% for movie in watchedMovies %}
+                    <li>
+                        <img src="{{ movie[0] }}" alt="{{ movie[1] }}" style="max-width: 150px; height: 225px;">
+                        <p>{{ movie[1] }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You have not watched any movies yet!</p>
+        {% endif %}
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 Movie 4 You-vie!. All rights reserved.</p>
+</footer>
 {% endblock %}

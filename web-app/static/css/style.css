@@ -105,3 +105,17 @@ footer {
     color: #777;
     width: 100%; /* Ensure footer spans the entire width */
 }
+
+.register-link{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* color of link */
+a:link {
+    color: rgb(245, 251, 199);
+}
+
+a:visited {
+    color: rgb(231, 199, 251);
+}
