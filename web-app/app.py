@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request
+from flask import Flask, render_template, g, request, redirect, url_for
 import csv;
 import os;
 import random;
@@ -19,6 +19,7 @@ app.config["MONGO_URI"] = MONGO_URI
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where(), server_api=server_api.ServerApi('1'))
 db = client[db_name]
 users_collection = db.users
+ratings_collection = db.ratings
 # mongo = PyMongo(app)
 
 def create_user(username, password):
@@ -86,12 +87,57 @@ def index():
             }
         )
         selected_movie = g.all_movies[new_movie_id] # uses newly generated movie id
+        movie_id = new_movie_id
 
     # if move has been assigned
     else:
         selected_movie = g.all_movies[user_movie_id] # uses existing movie id found in user doc in db
+        movie_id = user_movie_id
 
-    return render_template("index.html", selectedMovie=selected_movie)
+    return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id)
+
+@app.route('/setwatched', methods=["POST"])
+def setWatched():
+    user = users_collection.find_one({"username":"WilliamTest2"})
+    has_watched = eval(request.form['hasWatched'])
+    movie_id = int(request.form['movieId'])
+
+    print(has_watched)
+
+    if has_watched is True:
+        # ratings_collection.update_one(
+        #     {
+        #         "user": user["_id"],
+        #         "movie_id": movie_id
+        #     },
+        #     {
+        #         "$set": {
+        #             "user": user["_id"],
+        #             "movie_id": movie_id,
+        #             "date_watched": datetime.datetime.now()
+        #         }
+        #     }
+        # )
+        ratings_collection.insert_one(
+            {
+                "user": user["_id"],
+                "movie_id": movie_id,
+                "date_watched": datetime.datetime.now()
+            }
+        )
+    
+    # if they unclick the watched button
+    else:
+        ratings_collection.delete_one({
+            "user": user["_id"],
+            "movie_id": movie_id
+        })
+    # return redirect(url_for("index", userId=user["_id"], selectedMovie=g.all_movies[movie_id], movieId=movie_id))
+    
+
+@app.route('/update', methods=["POST"])
+def updateWatched():
+    user = "WilliamTest2"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=3000)
