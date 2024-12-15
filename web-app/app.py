@@ -41,30 +41,30 @@ def create_app():
             return User(username=user_data['username'], id=str(user_data['_id']))
         return None
 
-    def create_user(username, password):
-        # Gets movie title from our imdb 1000 data first, then searches another api for poster picture
-        movie_id = random_movie_id([])
-        movie_name = g.all_movies[movie_id][1]
-        print("Created user movie id: "+str(movie_id))
-        print(quote_plus(movie_name));
+    def get_poster(movie_name, movie_id):
+        # Gets movie title from our imdb 1000 data first, then searches another api for poster pictur
         poster_api_url = f"http://www.omdbapi.com/?t={quote_plus(movie_name)}&apikey=29510f6e"
         print(poster_api_url);
         response = requests.get(poster_api_url)
 
         if (response.status_code == 200) and (response.json()["Poster"] != "N/A"):
             # If api call successful, assign url of jpeg from the returned JSON object of movie
-            poster_url = response.json()["Poster"]
+            return response.json()["Poster"]
         else:
             # If movie poster not found, then just use the blurry one in our imdb 1000
-            poster_url = g.all_movies[movie_id][0]
+            return g.all_movies[movie_id][0]
 
-        
+    def create_user(username, password):
+        movie_id = random_movie_id([])
+        movie_name = g.all_movies[movie_id][1]
+        print("Created user movie id: "+str(movie_id))
+        print(quote_plus(movie_name))
         user = {
             "username": username,
             "password": password,  # Maybe hash this?
             "daily_movie":{
                 "movie_id": movie_id,
-                "poster_url": poster_url,
+                "poster_url": get_poster(movie_name,movie_id),
                 "recommended_date": datetime.datetime.now()
             },
             "watched_movies": []
@@ -118,30 +118,35 @@ def create_app():
         is_already_assigned = user_recommended_date.strftime("%Y %m %d") == datetime.datetime.now().strftime("%Y %m %d")
 
         # # For testing: to forcefully update movie even if date hasn't changed
-        # is_already_assigned = False
+        is_already_assigned = False
 
         # if movie hasn't been assigned for the day, set a new movie that user hasn't seen before
         if not is_already_assigned:
             print("Assigning new movie!")
             new_movie_id = random_movie_id(selected_user["watched_movies"])
+            new_movie_name = g.all_movies[new_movie_id][1]
+            new_poster = get_poster(new_movie_name, new_movie_id)
             users_collection.update_one(
                 {"_id":ObjectId(current_user.id)},    # TODO: replace username with actual user logged in
                 { 
                     "$set": {
                         "daily_movie.movie_id": new_movie_id,
+                        "daily_movie.poster_url": new_poster,
                         "daily_movie.recommended_date": datetime.datetime.now()
                     }
                 }
             )
             selected_movie = g.all_movies[new_movie_id] # uses newly generated movie id
             movie_id = new_movie_id
+            poster_url = new_poster
 
         # if move has been assigned
         else:
             print("Movie has already been assigned")
             selected_movie = g.all_movies[user_movie_id] # uses existing movie id found in user doc in db
             movie_id = user_movie_id
-        poster_url = user_poster_url
+            poster_url = user_poster_url
+        
         return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url)
     
     @app.route('/register', methods=['GET', 'POST'])
