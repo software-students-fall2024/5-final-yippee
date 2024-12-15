@@ -6,7 +6,8 @@ import random
 from dotenv import load_dotenv
 from pymongo import MongoClient, server_api
 from bson.objectid import ObjectId
-import certifi, datetime
+from urllib.parse import quote_plus
+import certifi, datetime, requests
 
 
 load_dotenv()
@@ -41,11 +42,29 @@ def create_app():
         return None
 
     def create_user(username, password):
+        # Gets movie title from our imdb 1000 data first, then searches another api for poster picture
+        movie_id = random_movie_id([])
+        movie_name = g.all_movies[movie_id][1]
+        print("Created user movie id: "+str(movie_id))
+        print(quote_plus(movie_name));
+        poster_api_url = f"http://www.omdbapi.com/?t={quote_plus(movie_name)}&apikey=29510f6e"
+        print(poster_api_url);
+        response = requests.get(poster_api_url)
+
+        if (response.status_code == 200) and (response.json()["Poster"] != "N/A"):
+            # If api call successful, assign url of jpeg from the returned JSON object of movie
+            poster_url = response.json()["Poster"]
+        else:
+            # If movie poster not found, then just use the blurry one in our imdb 1000
+            poster_url = g.all_movies[movie_id][0]
+
+        
         user = {
             "username": username,
             "password": password,  # Maybe hash this?
             "daily_movie":{
-                "movie_id": random.randint(1,1000),
+                "movie_id": movie_id,
+                "poster_url": poster_url,
                 "recommended_date": datetime.datetime.now()
             },
             "watched_movies": []
@@ -92,6 +111,9 @@ def create_app():
         # Checks if movie has been assigned for the day if last recommended movie date is same as today
         user_movie_id = selected_user["daily_movie"]["movie_id"]
         user_recommended_date = selected_user["daily_movie"]["recommended_date"]
+        user_poster_url = selected_user["daily_movie"]["poster_url"]
+
+        print("User movie id: "+str(user_movie_id))
         
         is_already_assigned = user_recommended_date.strftime("%Y %m %d") == datetime.datetime.now().strftime("%Y %m %d")
 
@@ -100,6 +122,7 @@ def create_app():
 
         # if movie hasn't been assigned for the day, set a new movie that user hasn't seen before
         if not is_already_assigned:
+            print("Assigning new movie!")
             new_movie_id = random_movie_id(selected_user["watched_movies"])
             users_collection.update_one(
                 {"_id":ObjectId(current_user.id)},    # TODO: replace username with actual user logged in
@@ -115,9 +138,11 @@ def create_app():
 
         # if move has been assigned
         else:
+            print("Movie has already been assigned")
             selected_movie = g.all_movies[user_movie_id] # uses existing movie id found in user doc in db
             movie_id = user_movie_id
-        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id)
+        poster_url = user_poster_url
+        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url)
     
     @app.route('/register', methods=['GET', 'POST'])
     def register():

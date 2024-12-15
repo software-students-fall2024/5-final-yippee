@@ -12,6 +12,7 @@ certifi = "*"
 datetime = "*"
 flask-login = "*"
 pymongo = "*"
+requests = "*"
 
 [dev-packages]
 
