@@ -6,7 +6,8 @@
     <script>
         // Function to update rating
         function gfg(n) {
-            fetch('http://localhost:5000/updaterating', {
+            fetch('https://swe-final-web-app-m232t.ondigitalocean.app/updaterating', {
+            // fetch('http://localhost:5000/updaterating', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,7 +22,8 @@
                 }
             })
             .then(data => {
-                return window.location.href = "http://localhost:5000/"
+                return window.location.href = "https://swe-final-web-app-m232t.ondigitalocean.app/"
+                // return window.location.href = "http://localhost:5000/"
             })
             .catch(error => {
                 console.error('Error:', error); // Handle any errors
