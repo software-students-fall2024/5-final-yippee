@@ -173,3 +173,38 @@ a:link {
 a:visited {
     color: rgb(231, 199, 251);
 }
+
+.card {
+    /* max-width: 33rem; */
+    background-color: rgb(50, 50, 50);
+    margin: 0 1rem;
+    padding: 0.5rem;
+    /* width: 100%; */
+    border-radius: 0.5rem;
+  }
+   
+.star {
+font-size: 2rem;
+color:rgb(23, 23, 23);
+cursor: pointer;
+}
+
+.one {
+color: rgb(255, 0, 0);
+}
+
+.two {
+color: rgb(255, 106, 0);
+}
+
+.three {
+color: rgb(251, 255, 120);
+}
+
+.four {
+color: rgb(255, 255, 0);
+}
+
+.five {
+color: rgb(24, 159, 14);
+}

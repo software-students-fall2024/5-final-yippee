@@ -113,6 +113,7 @@ def create_app():
         user_recommended_date = selected_user["daily_movie"]["recommended_date"]
         user_poster_url = selected_user["daily_movie"]["poster_url"]
         user_watched_movies = selected_user["watched_movies"]
+        star_count = 0
 
         print("User movie id: "+str(user_movie_id))
         
@@ -142,6 +143,7 @@ def create_app():
             selected_movie = g.all_movies[new_movie_id] # uses newly generated movie id
             movie_id = new_movie_id
             poster_url = new_poster
+            star_count = 0
 
         # if move has been assigned
         else:
@@ -152,8 +154,14 @@ def create_app():
             if movie_id in user_watched_movies:
                 print("Movie watched!")
                 is_movie_watched = True
+                existing_review = ratings_collection.find_one({
+                    "user": ObjectId(current_user.id),
+                    "movie_id": movie_id
+                })
+                star_count = existing_review["rating"]
+
         
-        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url, movieWatched=is_movie_watched)
+        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url, movieWatched=is_movie_watched, stars=star_count)
     
     @app.route('/register', methods=['GET', 'POST'])
     def register():
@@ -232,7 +240,8 @@ def create_app():
                 {
                     "user": user["_id"],
                     "movie_id": movie_id,
-                    "date_watched": datetime.datetime.now()
+                    "date_watched": datetime.datetime.now(),
+                    "rating": 0
                 }
             )
 
@@ -252,6 +261,16 @@ def create_app():
             )
 
         # Return to the homepage or wherever you need to redirect after processing
+        return redirect(url_for("index"))
+    
+    @app.route('/updaterating', methods=["POST"])
+    def updateRating():
+        selected_rating = ratings_collection.find_one({"user":ObjectId(current_user.id)})
+        star_count = int(request.get_json()['starCount'])
+        ratings_collection.update_one(
+            {"_id": selected_rating["_id"]},
+            {"$set": {"rating": star_count}}
+        )
         return redirect(url_for("index"))
 
     if __name__ == '__main__':
