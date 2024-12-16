@@ -209,13 +209,18 @@ def create_app():
         
         # Get the watched movies for the user
         watched_movies_ids = [
-            rating["movie_id"] for rating in ratings_collection.find({"user": user["_id"]})
+            {"movie_id": rating["movie_id"],"rating": rating} for rating in ratings_collection.find({"user": user["_id"]})
         ]
 
         watched_id_list = user["watched_movies"]
         
         # Fetch movie details for the watched movies
-        watched_movies = [g.all_movies[movie_id] for movie_id in watched_movies_ids]
+        watched_movies = [{
+            "movie_data": g.all_movies[movie["movie_id"]],
+            "movie_rating": movie["rating"]
+        } for movie in watched_movies_ids]
+
+        print(watched_movies)
 
         # Render the profile template with user and watched movies data
         return render_template(
@@ -267,6 +272,7 @@ def create_app():
     def updateRating():
         selected_rating = ratings_collection.find_one({"user":ObjectId(current_user.id)})
         star_count = int(request.get_json()['starCount'])
+        print("Setting to stars: "+str(star_count))
         ratings_collection.update_one(
             {"_id": selected_rating["_id"]},
             {"$set": {"rating": star_count}}

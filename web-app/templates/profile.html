@@ -13,8 +13,34 @@
                 <div class="watched-list">
                     {% for movie in watchedMovies %}
                         <div class="movie-row">
-                            <img src="{{ movie[0] }}" alt="{{ movie[1] }}" style="max-width: 150px">
-                            <p>{{ movie[1] }}</p>
+                            <img class="poster-little" src="{{ movie['movie_data'][0] }}" alt="{{ movie['movie_data'][1] }}" style="max-width: 150px">
+                            <div class="movie-row-info">
+                                <h4>{{ movie['movie_data'][1] }}</h4>
+                                <p style="color: gray">#{{ movie['movie_rating']['movie_id'] }}/1000 on IMDB</p>
+                                <p>Your rating: {{ movie['movie_rating']['rating'] }}</p>
+                                <p>Watched on: {{ movie['movie_rating']['date_watched'] }}</p>
+                                <!-- <script>
+
+                                </script>
+                                <div class="movie-row-stars">
+                                    <h1>Your Rating</h1>
+                                    <span onclick="gfg(1)"
+                                        class="star-">★
+                                    </span>
+                                    <span onclick="gfg(2)"
+                                        class="star">★
+                                    </span>
+                                    <span onclick="gfg(3)"
+                                        class="star">★
+                                    </span>
+                                    <span onclick="gfg(4)"
+                                        class="star">★
+                                    </span>
+                                    <span onclick="gfg(5)"
+                                        class="star">★
+                                    </span>
+                                </div> -->
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -26,7 +52,7 @@
         <div class="journey-section">
             <h3>Your Journey Across IMDB 1000</h3>
             <div class="watched-count"></div>
-            
+
             <div id="top-1000-list">
             </div>
     

@@ -160,6 +160,13 @@ footer {
     color: black;
 }
 
+.watched-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+}
+
 .register-link{
     display: flex;
     flex-direction: column;
@@ -207,4 +214,29 @@ color: rgb(255, 255, 0);
 
 .five {
 color: rgb(24, 159, 14);
+}
+
+.movie-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+    text-align: left;
+}
+
+.movie-row-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    row-gap: 3px;
+}
+
+.movie-row-info > * {
+    margin: 0;
+}
+
+.poster-little {
+    width: 120px;
+    height: fit-content;
 }
