@@ -3,25 +3,59 @@
 
 {% block content %}
 
-<div class="main-backdrop"></div>
-
 <main>
     <div class="content">
         <h1>Welcome, {{ user }}!</h1>
-        <h2>Your Watched Movies</h2>
+
+        <div class="watched-list-section">
+            <h2>Your Watched Movies</h2>
+            {% if watchedMovies %}
+                <div class="watched-list">
+                    {% for movie in watchedMovies %}
+                        <div class="movie-row">
+                            <img src="{{ movie[0] }}" alt="{{ movie[1] }}" style="max-width: 150px">
+                            <p>{{ movie[1] }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>You have not watched any movies yet!</p>
+            {% endif %}
+        </div>
         
-        {% if watchedMovies %}
-            <ul>
-                {% for movie in watchedMovies %}
-                    <li>
-                        <img src="{{ movie[0] }}" alt="{{ movie[1] }}" style="max-width: 150px; height: 225px;">
-                        <p>{{ movie[1] }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>You have not watched any movies yet!</p>
-        {% endif %}
+        <div class="journey-section">
+            <h3>Your Journey Across IMDB 1000</h3>
+            <div class="watched-count"></div>
+            <div id="top-1000-list">
+            </div>
+    
+            <script>
+                watchedIdsRaw = "{{ watchedIds }}"
+                watchedIdsArray = watchedIdsRaw.substring(1,watchedIdsRaw.length-1).split(", ")
+                console.log(watchedIdsArray)
+    
+                const listDiv = document.querySelector("#top-1000-list");
+                for(let i=0; i < 1000; i++){
+                    const movieBox = document.createElement("div")
+                    movieBox.className = "movie-box"
+                    movieBox.appendChild(document.createTextNode(i+1))
+                    if(watchedIdsArray.includes(i.toString())){
+                        movieBox.classList.add("watched")
+                    }
+                    listDiv.appendChild(movieBox)
+                }
+    
+                const watchedCount = document.querySelector(".watched-count")
+                const greenNum = document.createElement("p")
+                greenNum.textContent = `${watchedIdsArray.length}`
+                greenNum.style = "color: greenyellow"
+                watchedCount.appendChild(greenNum)
+                const outOfText = document.createElement("p")
+                outOfText.textContent = "/1000 watched"
+                watchedCount.appendChild(outOfText)
+            </script>
+        </div>
+
     </div>
 </main>
 {% endblock %}

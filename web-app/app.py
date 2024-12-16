@@ -47,7 +47,7 @@ def create_app():
         print(poster_api_url);
         response = requests.get(poster_api_url)
 
-        if (response.status_code == 200) and (response.json()["Poster"] != "N/A"):
+        if (response.status_code == 200) and (response.json().get("Poster") is not None):
             # If api call successful, assign url of jpeg from the returned JSON object of movie
             return response.json()["Poster"]
         else:
@@ -112,13 +112,16 @@ def create_app():
         user_movie_id = selected_user["daily_movie"]["movie_id"]
         user_recommended_date = selected_user["daily_movie"]["recommended_date"]
         user_poster_url = selected_user["daily_movie"]["poster_url"]
+        user_watched_movies = selected_user["watched_movies"]
 
         print("User movie id: "+str(user_movie_id))
         
         is_already_assigned = user_recommended_date.strftime("%Y %m %d") == datetime.datetime.now().strftime("%Y %m %d")
 
-        # # For testing: to forcefully update movie even if date hasn't changed
-        is_already_assigned = False
+        # TODO: For testing - to forcefully update movie even if date hasn't changed
+        # is_already_assigned = False
+
+        is_movie_watched = False
 
         # if movie hasn't been assigned for the day, set a new movie that user hasn't seen before
         if not is_already_assigned:
@@ -146,8 +149,11 @@ def create_app():
             selected_movie = g.all_movies[user_movie_id] # uses existing movie id found in user doc in db
             movie_id = user_movie_id
             poster_url = user_poster_url
+            if movie_id in user_watched_movies:
+                print("Movie watched!")
+                is_movie_watched = True
         
-        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url)
+        return render_template("index.html", selectedMovie=selected_movie, movieId=movie_id, poster=poster_url, movieWatched=is_movie_watched)
     
     @app.route('/register', methods=['GET', 'POST'])
     def register():
@@ -177,7 +183,7 @@ def create_app():
             if user_data and user_data["password"] == password:
                 user = User(username=user_data['username'],id=str(user_data['_id']))
                 login_user(user)
-                return redirect(url_for('profile', user=username))
+                return redirect(url_for('index', user=username))
             else:
                 error = "Invalid username or password."
         return render_template('login.html', error=error)
@@ -197,6 +203,8 @@ def create_app():
         watched_movies_ids = [
             rating["movie_id"] for rating in ratings_collection.find({"user": user["_id"]})
         ]
+
+        watched_id_list = user["watched_movies"]
         
         # Fetch movie details for the watched movies
         watched_movies = [g.all_movies[movie_id] for movie_id in watched_movies_ids]
@@ -205,7 +213,8 @@ def create_app():
         return render_template(
             "profile.html",
             user=user["username"],
-            watchedMovies=watched_movies
+            watchedMovies=watched_movies,
+            watchedIds=watched_id_list
         )
 
     @app.route('/setwatched', methods=["POST"])

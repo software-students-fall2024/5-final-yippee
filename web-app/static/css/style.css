@@ -37,10 +37,14 @@ header img {
 /* Content styling */
 main {
     width: 100%; /* Full width */
-    padding-top: 70px; /* Space for header */
+    /* padding-top: 70px; Space for header */
     position: relative;
     z-index: 1; 
     box-sizing: border-box; /* Prevent any padding from causing overflow */
+}
+
+h1{
+    font-size: 1.2rem;
 }
 
 /* Backdrop behind the main content */
@@ -63,8 +67,24 @@ main {
     position: relative;
     z-index: 1; 
     text-align: center;
-    padding: 0px;
+    padding: 30px;
     margin: 0; /* Prevent additional spacing */
+}
+
+.watched-count {
+    background-color: #2A2A2A;
+    border-radius: 10px;
+    /* border-style: solid; */
+    width: fit-content;
+    padding: 0px 10px;
+    font-weight: 700;
+    display: flex;
+}
+
+.journey-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 a:link, a:visited {
@@ -113,6 +133,31 @@ footer {
     text-align: center;
     color: #777;
     width: 100%; /* Ensure footer spans the entire width */
+}
+
+#top-1000-list {
+    display: grid;
+    grid-template-columns: repeat(5, 3rem);
+    grid-template-rows: repeat(auto, auto);
+    gap: 10px;
+    padding-top: 30px;
+}
+
+.movie-box {
+    border-style: solid;
+    border-width: 1px;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: gray;
+    padding: 4px;
+}
+
+.watched {
+    background-color: greenyellow;
+    color: black;
 }
 
 .register-link{
