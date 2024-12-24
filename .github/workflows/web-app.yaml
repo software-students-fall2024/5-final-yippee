@@ -7,11 +7,14 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: web-app
     timeout-minutes: 6
     strategy:
       matrix:
         python-version: ["3.11"]
-    working-directory: web-app
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
