@@ -31,10 +31,10 @@ MONGO_DBNAME=movie_db
 
 ### Setting Up the Web App
 
-Build the web app image from the Dockerfile. While in the `web-app` directory:
+Build the web app image from the Dockerfile. While in the outermost `5-Final-Yippee` directory:
 
 ```bash
-docker build -t web-app .
+docker build . -t web-app -f web-app/Dockerfile
 ```
 
 Now that you have the `web-app` image (check by running `docker images` and it should appear in the list), instantiate a new container called `webapp`:
