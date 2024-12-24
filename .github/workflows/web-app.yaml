@@ -7,10 +7,6 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: web-app
     timeout-minutes: 6
     strategy:
       matrix:
@@ -36,6 +32,7 @@ jobs:
           images: teamyippee/web-app
 
       - name: Build and push Docker image
+        working-directory: ./web-app
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
