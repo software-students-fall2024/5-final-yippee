@@ -7,7 +7,7 @@ WORKDIR /app
 # BEFORE BUILDING AN IMAGE, run "pipenv requirements > requirements.txt" in terminal to make sure requirements.txt is up to date with Pipfile contents
 
 # install dependencies into the image - doing this first will speed up subsequent builds, as Docker will cache this step
-COPY web-app/requirements.txt ./
+COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
 # the ADD command is how you add files from your local machine into a Docker image
@@ -18,4 +18,5 @@ ADD . .
 EXPOSE 5000
 
 # # Run app.py when the container launches
-# CMD [ "python3", "-m" , "flask", "-A", "web-app/app.py", "run", "-h", "0.0.0.0" ]
+# CMD [ "gunicorn", "app:create_app()" ]
+CMD [ "python3", "-m" , "flask", "-A", "web-app/app.py", "run", "-h", "0.0.0.0" ]
