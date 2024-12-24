@@ -4,7 +4,7 @@
 
 ## Description
 
-A web app that recommends a movie to a user everyday. Users can keep track of the movies they've watched.
+A web app that recommends a movie to a user everyday. Users can keep track of the movies they've watched. Experience the app by visiting (https://swe-final-web-app-m232t.ondigitalocean.app/)
 
 ## Team Members
 
@@ -20,8 +20,29 @@ A web app that recommends a movie to a user everyday. Users can keep track of th
 
 ## How to Configure the Project
 
-There is nothing to configure! Experience the app by visiting (https://swe-final-web-app-m232t.ondigitalocean.app/)
+### Setting Up the Database
+
+Paste the connection string we've sent you over Discord, or set up your own database using Mongo Atlas and copy your connection string into a .env file in the `web-app` folder with the following format:
+
+```bash
+MONGO_URI=[your connection string]
+MONGO_DBNAME=movie_db
+```
+
+### Setting Up the Web App
+
+Build the web app image from the Dockerfile. While in the `web-app` directory:
+
+```bash
+docker build -t web-app .
+```
+
+Now that you have the `web-app` image (check by running `docker images` and it should appear in the list), instantiate a new container called `webapp`:
+
+```bash
+docker run --name webapp -d -p 5000:5000 web-app
+```
 
 ## How to Set up Environment Variables
 
-All environment variables have already been configured in Digital Ocean, nothing for the user's end.
+Necessary .env variables for connection to the Mongo database have been described above.
